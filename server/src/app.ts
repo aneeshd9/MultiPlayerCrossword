@@ -10,7 +10,7 @@ app.get("/", (_, res) => {
 
 app.get("/puzzle", (_, res) => {
   const puzzle = parsePuzFile(
-    "/home/aneeshd/Projects/MultiPlayerCrossword/server/puzzle/latest.puz"
+    "/home/aneeshd/Projects/MultiPlayerCrossword/server/puzzle/latest2.puz"
   );
   console.log(puzzle);
   res.send("Hello");
