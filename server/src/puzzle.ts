@@ -1,45 +1,29 @@
-import fs from 'fs/promises';
-
-async function readPuzFile(): Promise<string> {
-  const puzFilePath = '/home/aneeshd/Projects/MultiPlayerCrossword/server/puzzle/latest.puz';
-
-  try {
-    const data = await fs.readFile(puzFilePath, { encoding: 'utf-8' });
-    return data;
-  } catch(err) {
-    console.log(err);
-    return "";
-  }
-}
-
-function getPuzzleSolution(thePuzzle: string): string {
-  var solution = takeWhile(thePuzzle.slice(52), c => {
-    return /^[A-Z|.]$/.test(c);
-  });
-  return solution;
-}
-
-function takeWhile(str: string, p: (c: string) => Boolean) {
-  var taken = "";
-  for (var i = 0; i < str.length; ++i) {
-    if (p(str.charAt(i))) taken = taken.concat(str.charAt(i));
-    else break;
-  }
-  return taken;
-}
+import fs from "fs";
 
 class Puzzle {
-  thePuzzle: string;
-  solution: string;
+  width: number
+  height: number
+  solution: string
+  clues: string
 
-  constructor(thePuzzle: string) {
-    this.thePuzzle = thePuzzle;
-    this.solution = getPuzzleSolution(this.thePuzzle);
+  constructor(width: number,
+              height: number,
+              solution: string, clues: string) {
+    this.width = width;
+    this.height = height;
+    this.solution = solution;
+    this.clues = clues;
   }
 }
 
-export async function getPuzzle() {
-  const thePuzzle = await readPuzFile();
-  const puzzle = new Puzzle(thePuzzle);
-  return puzzle;
+export function parsePuzFile(filePath: string) {
+  const buffer = fs.readFileSync(filePath);
+
+  const width = buffer.readUInt8(44);
+  const height = buffer.readUInt8(45);
+  const solution = buffer.toString("utf-8", 52, 52 + width * height);
+  const clues = buffer.toString("utf-8", 52 + width * height);
+
+  return new Puzzle(width, height, solution, clues);
 }
+
