@@ -33,9 +33,12 @@ export class Puzzle {
     const solutionStart: number = this._solution_offset;
     const solutionEnd: number = solutionStart + (this._width * this._height);
     const solutionString = new TextDecoder().decode(this._puzBytes.slice(solutionStart, solutionEnd));
-    this._solution = this.initSolution(solutionString);
+    this._solution = this._initSolution(solutionString);
 
-    this._state = this.initState();
+    this._state = this._initState();
+    
+    const clues = new TextDecoder().decode(this._puzBytes.slice(solutionEnd)).split("\0").slice(3);
+    this._setClues(clues);
   }
 
   public get width(): number {
@@ -58,7 +61,11 @@ export class Puzzle {
     return this._state[x][y].solutionIdx[clueType];
   }
 
-  private initSolution(solutionString: string): string[][] {
+  public clue(x: number, y: number, clueType: ClueType): string {
+    return this._state[x][y].clues[clueType];
+  }
+
+  private _initSolution(solutionString: string): string[][] {
     const solution: string[][] = [];
     var idx: number = 0;
     for (var r = 0; r < this._height; ++r) {
@@ -71,7 +78,7 @@ export class Puzzle {
     return solution;
   }
 
-  private initState(): PuzzleNode[][] {
+  private _initState(): PuzzleNode[][] {
     const state: PuzzleNode[][] = [];
     
     for (var r = 0; r < this._height; ++r) {
@@ -93,27 +100,27 @@ export class Puzzle {
         state[r][c].solutionIdx = [-1, -1];
         state[r][c].clues = ["", ""];
 
-        this.setSolution(state, r, c, ClueType.ACROSS);
-        this.setSolution(state, r, c, ClueType.DOWN);
+        this._setSolution(state, r, c, ClueType.ACROSS);
+        this._setSolution(state, r, c, ClueType.DOWN);
       }
     }
 
     return state;
   }
 
-  private setSolution(state: PuzzleNode[][], i: number, j: number, clueType: ClueType): void {
+  private _setSolution(state: PuzzleNode[][], i: number, j: number, clueType: ClueType): void {
     if (clueType == ClueType.ACROSS) {
-      const range: number[] = this.getSolutionRange(i, j, clueType);
-      state[i][j].solution[clueType] = this.extractFrom2D(i, range, clueType);
+      const range: number[] = this._getSolutionRange(i, j, clueType);
+      state[i][j].solution[clueType] = this._extractFrom2D(i, range, clueType);
       state[i][j].solutionIdx[clueType] = j - range[0];
     } else {
-      const range: number[] = this.getSolutionRange(i, j, clueType);
-      state[i][j].solution[clueType] = this.extractFrom2D(j, range, clueType);
+      const range: number[] = this._getSolutionRange(i, j, clueType);
+      state[i][j].solution[clueType] = this._extractFrom2D(j, range, clueType);
       state[i][j].solutionIdx[clueType] = i - range[0];
     }
   }
 
-  private getSolutionRange(i: number, j: number, clueType: ClueType): number[] {
+  private _getSolutionRange(i: number, j: number, clueType: ClueType): number[] {
     if (clueType == ClueType.ACROSS) {
       var start: number = j;
       while (start > 0 && this._solution[i][start - 1] != ".") {
@@ -139,7 +146,7 @@ export class Puzzle {
     }
   }
 
-  private extractFrom2D(i: number, range: number[], clueType: ClueType): string {
+  private _extractFrom2D(i: number, range: number[], clueType: ClueType): string {
     var ans: string = "";
     const start: number = range[0];
     const end: number = range[1];
@@ -155,5 +162,36 @@ export class Puzzle {
     }
 
     return ans;
+  }
+
+  private _setClues(clues: string[]): void {
+    var clueIdx = 0;
+    for (var r = 0; r < this._height; ++r) {
+      for (var c = 0; c < this._width; ++c) {
+        if (this._state[r][c].isEmpty) continue;
+
+        if (this._hasLeftBlocked(r, c)) {
+          this._state[r][c].clues[ClueType.ACROSS] = clues[clueIdx];
+          ++clueIdx;
+        } else {
+          this._state[r][c].clues[ClueType.ACROSS] = this._state[r][c - 1].clues[ClueType.ACROSS];
+        }
+
+        if (this._hasTopBlocked(r, c)) {
+          this._state[r][c].clues[ClueType.DOWN] = clues[clueIdx];
+          ++clueIdx;
+        } else {
+          this._state[r][c].clues[ClueType.DOWN] = this._state[r - 1][c].clues[ClueType.DOWN];
+        }
+      }
+    }
+  }
+
+  private _hasTopBlocked(x: number, y: number): boolean {
+    return x === 0 || this._state[x - 1][y].isEmpty;
+  }
+
+  private _hasLeftBlocked(x: number, y: number): boolean {
+    return y === 0 || this._state[x][y - 1].isEmpty;
   }
 }

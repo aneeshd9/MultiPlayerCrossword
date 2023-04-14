@@ -39,4 +39,19 @@ describe("parsed puzzle", () => {
       }
     }
   });
+
+  it("should have correct state/clues", () => {
+    expect(puzzle.clue(0, 0, ClueType.ACROSS)).toBe("Peppermint __");
+    expect(puzzle.clue(0, 0, ClueType.DOWN)).toBe(
+      "Playground game that is now a professional sport"
+    );
+    expect(puzzle.clue(1, 9, ClueType.ACROSS)).toBe("Bakery-cafe chain");
+    expect(puzzle.clue(1, 9, ClueType.DOWN)).toBe("Buffers");
+    expect(puzzle.clue(3, 2, ClueType.ACROSS)).toBe("Loops in, in a way");
+    expect(puzzle.clue(3, 2, ClueType.DOWN)).toBe(
+      '"Just pretend we belong here"'
+    );
+    expect(puzzle.clue(9, 4, ClueType.ACROSS)).toBe("Cambodia neighbor");
+    expect(puzzle.clue(9, 4, ClueType.DOWN)).toBe("Esteem");
+  });
 });
