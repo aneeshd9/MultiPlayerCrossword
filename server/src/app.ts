@@ -1,21 +1,18 @@
+import { Puzzle } from "./puzzle";
 import express from "express";
-import { parsePuzFile } from "./puzzle";
+
+const puzFilePath =
+  "/home/aneeshd/Projects/MultiPlayerCrossword/server/puzzle/latest.puz";
+const puzzle: Puzzle = new Puzzle(puzFilePath);
 
 const app = express();
-const port = 3000;
+const port: number = 3000;
 
 app.get("/", (_, res) => {
-  res.send("Connected to puzzle server!");
-});
-
-app.get("/puzzle", (_, res) => {
-  const puzzle = parsePuzFile(
-    "/home/aneeshd/Projects/MultiPlayerCrossword/server/puzzle/latest2.puz"
-  );
-  console.log(puzzle);
-  res.send("Hello");
+  res.send("Connected to server!");
+  console.log(puzzle.height + " " + puzzle.width);
 });
 
 app.listen(port, () => {
-  console.log(`Express is listening at https://localhost:${port}`);
+  console.log(`Server running on port ${port}`);
 });
