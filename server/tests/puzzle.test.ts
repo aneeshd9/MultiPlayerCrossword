@@ -13,8 +13,6 @@ describe("parsed puzzle", () => {
     expect(puzzle.height).toBe(15);
   });
 
-  
-
   it("should have correct state/solution", () => {
     expect(puzzle.solution(0, 0, ClueType.ACROSS)).toBe("TEA");
     expect(puzzle.solution(0, 0, ClueType.DOWN)).toBe("TAG");
@@ -26,7 +24,7 @@ describe("parsed puzzle", () => {
     expect(puzzle.solution(9, 4, ClueType.DOWN)).toBe("ADMIRE");
   });
 
-it("should have correct state/solutionIdx", () => {
+  it("should have correct state/solutionIdx", () => {
     for (var r = 0; r < puzzle.height; ++r) {
       for (var c = 0; c < puzzle.width; ++c) {
         if (puzzle.isEmpty(r, c)) continue;
