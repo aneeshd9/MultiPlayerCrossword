@@ -1,6 +1,6 @@
 import fs from "fs";
 
-enum ClueType {
+export enum ClueType {
   ACROSS,
   DOWN
 }
@@ -46,8 +46,16 @@ export class Puzzle {
     return this._height;
   }
 
-  public get solution(): string[][] {
-    return this._solution;
+  public isEmpty(x: number, y: number): boolean {
+    return this._state[x][y].isEmpty;
+  }
+
+  public solution(x: number, y: number, clueType: ClueType): string {
+    return this._state[x][y].solution[clueType];
+  }
+
+  public solutionIdx(x: number, y: number, clueType: ClueType): number {
+    return this._state[x][y].solutionIdx[clueType];
   }
 
   private initSolution(solutionString: string): string[][] {
