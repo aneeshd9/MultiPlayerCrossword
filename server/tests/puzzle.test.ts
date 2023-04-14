@@ -1,7 +1,7 @@
 import { Puzzle } from "../src/puzzle";
 
 const puzFilePath =
-  "/home/aneeshd/Projects/MultiPlayerCrossword/server/puzzle/latest.puz";
+  "/home/aneeshd/Projects/MultiPlayerCrossword/server/tests/assets/test.puz";
 const puzzle = new Puzzle(puzFilePath);
 
 describe("parsed puzzle", () => {
@@ -11,5 +11,5 @@ describe("parsed puzzle", () => {
 
   it("should have correct height", () => {
     expect(puzzle.height).toBe(15);
-  })
+  });
 });
