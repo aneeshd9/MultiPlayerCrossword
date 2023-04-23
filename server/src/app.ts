@@ -6,7 +6,7 @@ const puzFilePath =
 const puzzle: Puzzle = new Puzzle(puzFilePath);
 
 const app = express();
-const port: number = 3000;
+const port: number = 4000;
 
 app.get("/", (_, res) => {
   res.send("Connected to server!");

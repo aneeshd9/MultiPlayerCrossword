@@ -7,8 +7,3 @@ body {
   margin: 0;
   padding: 0;
 }
-
-.picker {
-  height: calc(100vh - 60px);
-  /* height: 100vh; */
-}

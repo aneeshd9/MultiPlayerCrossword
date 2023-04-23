@@ -19,17 +19,15 @@ function Picker() {
   const dates = lastSevenDates();
   return (
     <div
-      className="picker container-fluid d-flex flex-column justify-content-center"
+      className="col-12 d-flex flex-column justify-content-center"
       style={{ backgroundColor: "#d3d3d3" }}
     >
       {dates.map((d, i) => {
         return (
-          <div className="row">
-            <div className="col-12 text-center p-2 m-2">
-              <button type="button" className="btn btn-success">
-                {d} {`- Published ${i + 1} days ago`}
-              </button>
-            </div>
+          <div className="text-center p-2 m-2" key={i}>
+            <button type="button" className="btn btn-success">
+              {d} {`- Published ${i + 1} days ago`}
+            </button>
           </div>
         );
       })}
